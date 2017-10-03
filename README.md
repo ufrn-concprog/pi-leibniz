@@ -1,13 +1,9 @@
 # Cálculo concorrente da série de Leibniz #
 
-This README would normally document whatever steps are necessary to get your application up and running.
-
-### Descrição ###
-
 Implementação concorrente do cálculode uma aproximação para &pi; por meio da implementação de uma [série de Leibniz](https://en.wikipedia.org/wiki/Leibniz_formula_for_pi).
 O número de termos calculados determina a precisão do valor obtido para &pi;.
 
-### Implementação ###
+### Descrição ###
 
 Este programa foi implementado utilizando facilidades providas pela linguagem de programação Java para concorrência. No programa, cada _i_-ésimo termo da série é calculado por uma _thread_ independente, cujo resultado parcial é armazenado temporariamente em memória em uma lista de valores. Ao término da computação de todos os termos, é feita uma agregação de soma de todos os valores parciais armazenados.
 
