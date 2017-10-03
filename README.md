@@ -1,7 +1,7 @@
 # Cálculo concorrente da série de Leibniz #
 
-Implementação concorrente do cálculode uma aproximação para &#960; por meio da implementação de uma [série de Leibniz](https://en.wikipedia.org/wiki/Leibniz_formula_for_pi).
-O número de termos calculados determina a precisão do valor obtido para &#960;.
+Implementação concorrente do cálculode uma aproximação para π por meio da implementação de uma [série de Leibniz](https://en.wikipedia.org/wiki/Leibniz_formula_for_pi).
+O número de termos calculados determina a precisão do valor obtido para π.
 
 ### Descrição ###
 
