@@ -1,53 +1,44 @@
-/*
- ===============================================================================
- ARQUIVO............: PiLeibniz.java
- DESCRICAO..........: Calculo concorrente de uma aproximacao para pi por meio 
- 					  da implementacao de uma serie de Leibniz com numero fixo
- 					  de termos
- AUTOR..............: Everton Cavalcante (everton@dimap.ufrn.br)
- CRIADO EM..........: 02/10/2017
- MODIFICADO EM......: 02/10/2017
- ===============================================================================
-*/
-
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.CyclicBarrier;
 
 /**
- * Calculo concorrente de uma aproximacao para &pi; por 
- * meio da implementacao de uma serie de Leibniz com 
- * numero fixo de termos. O numero de termos calculados 
- * determina a precisao do valor obtido para &pi;.
+ * Concurrent calculation of an approximation to &pi; by implementing a Leibniz series
+ * with a fixed number of terms. The number of computed terms (provided by the user
+ * via command line) determines the precision of the value for &pi;
  * @see <a href="https://en.wikipedia.org/wiki/Leibniz_formula_for_pi">https://en.wikipedia.org/wiki/Leibniz_formula_for_pi</a>
- * @author Everton Cavalcante
+ *
+ * @author <a href="mailto:everton.cavalcante@ufrn.br">Everton Cavalcante</a>
  */
 public class PiLeibniz {
 	/**
-	 * Metodo principal, em que o numero de termos a serem calculados
-	 * e fornecido pelo usuario via linha de comando
-	 * @param args Argumentos de linha de comando
+	 * Main method
+	 * @param args Command line arguments
 	 */
 	public static void main(String[] args) {
-		System.out.println("Calculo concorrente de uma aproximacao para pi\n");		
+		System.out.println("Concurrent calculation of an approximation for pi\n");
 		if (args.length != 1) {
-			System.err.println("Numero de termos a serem calculados fornecido incorretamente.");
-			System.err.println("O programa sera encerrado.");
+			System.err.println("Invalid number of terms.");
+			System.err.println("The program will be finished.");
 			System.exit(1);
 		}
 		
-		int precisao = Integer.parseInt(args[0]);
+		int precision = Integer.parseInt(args[0]);
 		
-		List<Double> termos = Collections.synchronizedList(new ArrayList<Double>());
+		List<Double> terms = Collections.synchronizedList(new ArrayList<Double>());
 		
-		AgregadorSoma agregador = new AgregadorSoma(termos);
-		CyclicBarrier barreira = new CyclicBarrier(precisao, agregador);
-		
-		System.out.println("Calculando o valor de pi com " + precisao + " termos...");
-		for (int i = 0; i < precisao; i++) {
-			CalcThread thread = new CalcThread(i, termos, barreira);
+		SumAggregator aggregator = new SumAggregator(terms);
+		CyclicBarrier barrier = new CyclicBarrier(precision, aggregator);
+
+		long start = System.nanoTime();
+		System.out.println("Calculating the value of pi with " + precision + " terms...");
+		for (int i = 0; i < precision; i++) {
+			CalcThread thread = new CalcThread(i, terms, barrier);
 			thread.start();
 		}
+		long finish = System.nanoTime();
+		long timeElapsed = finish - start;
+		System.out.println((timeElapsed / 1000000) + " milliseconds");
 	}
 }

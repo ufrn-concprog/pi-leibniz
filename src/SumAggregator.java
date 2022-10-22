@@ -15,8 +15,9 @@ import java.util.List;
  * Implementacao de objeto <code>Runnable</code>, 
  * executado como uma <em>thread</em>, 
  * para a soma dos valores contidos em uma lista
+ * @author <a href="mailto:everton.cavalcante@ufrn.br">Everton Cavalcante</a>
  */
-public class AgregadorSoma implements Runnable {
+public class SumAggregator implements Runnable {
 	/** Lista de valores a serem somados */
 	private List<Double> termos;
 	
@@ -24,7 +25,7 @@ public class AgregadorSoma implements Runnable {
 	 * Construtor parametrizado
 	 * @param termos Lista de valores
 	 */
-	public AgregadorSoma(List<Double> termos) {
+	public SumAggregator(List<Double> termos) {
 		this.termos = termos;
 	}
 
