@@ -1,14 +1,3 @@
-/*
- ===============================================================================
- ARQUIVO............: AgregadorSoma.java
- DESCRICAO..........: Implementacao de objeto Runnable, executado como uma thread, 
- 					  para a soma dos valores contidos em uma lista
- AUTOR..............: Everton Cavalcante (everton@dimap.ufrn.br)
- CRIADO EM..........: 02/10/2017
- MODIFICADO EM......: 02/10/2017
- ===============================================================================
-*/
-
 import java.util.List;
 
 /**
