@@ -8,22 +8,22 @@ import java.util.concurrent.CyclicBarrier;
  */
 public class CalcThread extends Thread {
 	/** <em>i</em>-th term of the series to be computed */
-	private int i;
+	private final int i;
 	
 	/** List of partial results */
-	private List<Double> terms;
+	private final List<Double> terms;
 
 	/** 
 	 * Reference to the barrier object responsible for synchronization
 	 * @see java.util.concurrent.CyclicBarrier
 	 */
-	private CyclicBarrier barrier;
+	private final CyclicBarrier barrier;
 	
 	/**
-	 * Parameterizes constructor
-	 * @param i Indice do termo a ser calculado
-	 * @param terms Referencia a lista na qual o resultado computado sera armazenado
-	 * @param barrier Referencia a barreira para sincronizacao
+	 * Parameterized constructor
+	 * @param i Index of the term to be computed
+	 * @param terms List where computed terms will be stored
+	 * @param barrier Barrier for synchronization
 	 */
 	public CalcThread(int i, List<Double> terms, CyclicBarrier barrier) {
 		this.i = i;

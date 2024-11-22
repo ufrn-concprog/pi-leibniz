@@ -23,22 +23,27 @@ public class PiLeibniz {
 			System.err.println("The program will be finished.");
 			System.exit(1);
 		}
-		
-		int precision = Integer.parseInt(args[0]);
-		
-		List<Double> terms = Collections.synchronizedList(new ArrayList<Double>());
-		
-		SumAggregator aggregator = new SumAggregator(terms);
-		CyclicBarrier barrier = new CyclicBarrier(precision, aggregator);
 
-		long start = System.nanoTime();
-		System.out.println("Calculating the value of pi with " + precision + " terms...");
-		for (int i = 0; i < precision; i++) {
-			CalcThread thread = new CalcThread(i, terms, barrier);
-			thread.start();
+		try {
+			int precision = Integer.parseInt(args[0]);
+
+			List<Double> terms = Collections.synchronizedList(new ArrayList<Double>());
+
+			SumAggregator aggregator = new SumAggregator(terms);
+			CyclicBarrier barrier = new CyclicBarrier(precision, aggregator);
+
+			long start = System.nanoTime();
+			System.out.println("Calculating the value of pi with " + precision + " terms...");
+			for (int i = 0; i < precision; i++) {
+				CalcThread thread = new CalcThread(i, terms, barrier);
+				thread.start();
+			}
+			long finish = System.nanoTime();
+			long timeElapsed = finish - start;
+			System.out.println((timeElapsed / 1000000) + " milliseconds");
+		} catch (java.lang.OutOfMemoryError ome) {
+			System.err.println("Insufficient memory to create threads.");
+			System.exit(1);
 		}
-		long finish = System.nanoTime();
-		long timeElapsed = finish - start;
-		System.out.println((timeElapsed / 1000000) + " milliseconds");
 	}
 }

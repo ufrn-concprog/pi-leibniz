@@ -1,29 +1,29 @@
 import java.util.List;
 
 /**
- * Implementacao de objeto <code>Runnable</code>, 
- * executado como uma <em>thread</em>, 
- * para a soma dos valores contidos em uma lista
+ * Implementation of <code>Runnable</code> object to be
+ * executed as a <em>thread</em> to sum the values contained
+ * into a list
  * @author <a href="mailto:everton.cavalcante@ufrn.br">Everton Cavalcante</a>
  */
 public class SumAggregator implements Runnable {
-	/** Lista de valores a serem somados */
-	private List<Double> termos;
+	/** List of values to sum */
+	private final List<Double> terms;
 	
 	/**
-	 * Construtor parametrizado
-	 * @param termos Lista de valores
+	 * Parameterized constructor
+	 * @param terms List of values
 	 */
-	public SumAggregator(List<Double> termos) {
-		this.termos = termos;
+	public SumAggregator(List<Double> terms) {
+		this.terms = terms;
 	}
 
 	@Override
 	public void run() {
-		double soma = 0.0;
-		for (int i = 0; i < termos.size(); i++) {
-			soma += termos.get(i);
-		}
-		System.out.println(soma);
+		double sum = 0.0;
+        for (Double term : terms) {
+            sum += term;
+        }
+		System.out.println(sum);
 	}
 }
