@@ -1,29 +1,62 @@
-# Concurrent calculation of the Leibniz series #
+# Concurrent Calculation of the Leibniz Series using Barriers in Java
 
-## About ##
-This project implements a concurrent solution in the Java programming language to the calculation of the [Leibniz infinite series](https://en.wikipedia.org/wiki/Leibniz_formula_for_pi) to determine an approximation to π. Despite its slow convergence, the Leibniz formula is effective to calculate π with high precision (hundreds of digits or more). The number of computed terms determines the precision of the value for π.
+This project implements a concurrent solution in the Java programming language to calculate an approximation of $\pi$ using the [Leibniz infinite series](https://en.wikipedia.org/wiki/Leibniz_formula_for_pi):
 
-In this solution, each _i_-th term of the series is calculated by an independent thread, whose partial result is temporarily stored in memory into a list of values. After computing all the terms, they are aggregated by summing all the stored partial values.
+$$\pi = 4 \sum_{i=0}^{\infty} \frac{(-1)^i}{2i + 1} = 4 \left( 1 - \frac{1}{3} + \frac{1}{5} - \frac{1}{7} + \frac{1}{9} - \dots \right)$$
 
-A **barrier** is used to synchronize all the threads used to calculate the terms, enabling the aggregation to happen only when all of them have concluded their respective calculation. If a thread concludes its respective calculation before the others, it is suspended and waits for the others to conclude, automatically controlled by the barrier.
+This repository serves a pedagogical purpose, demonstrating how to coordinate multiple concurrently running threads using a barrier as a synchronization mechanism with Java's [`CyclicBarrier`](https://docs.oracle.com/en/java/javase/26/docs/api/java.base/java/util/concurrent/CyclicBarrier.html) object.
 
-The barrier is implemented by a [`CyclicBarrier`](https://docs.oracle.com/javase/19/docs/api/java/util/concurrent/CyclicBarrier.html) object, available among the facilities provided by the [`java.util.concurrent` package](https://docs.oracle.com/en/java/javase/19/docs/api/java.base/java/util/concurrent/package-summary.html). This object is instantiated by providing the number of threads to synchronize (corresponding to the number of terms to determine for the series) and, optionally, a [`Runnable`](https://docs.oracle.com/en/java/javase/19/docs/api/java.base/java/lang/Runtime.html) object codifying the statements to be executed after all threads have finished their respective tasks. In this case, such a `Runnable` object executes the sum of the values of each of the terms computed by the threads.
+## 📃 About
 
-## Repository structure
-Source code in this repository is organized as follows:
+A **barrier** is a synchronization mechanism that causes multiple threads to wait at a designated synchronization point until a specified number of threads have arrived.
+
+### Execution Workflow
+
+1. **Decomposition and thread spawning**: The user inputs the number of terms (`precision`) to calculate via the command line. An independent worker thread ([`CalcThread`](src/CalcThread.java)) is spawned for each term $i \in [0, \text{precision}-1]$.
+2. **Partial term calculation**: Each thread computes its $i$-th term:
+   $$\text{term}_i = 4 \cdot \frac{(-1)^i}{2i + 1}$$
+3. **Thread-safe storage**: The computed partial term is stored into a shared, thread-safe list.
+4. **Waiting at the barrier**: After appending its value, each [`CalcThread`](src/CalcThread.java) calls `barrier.await()`, suspending execution until all other worker threads finish their computations.
+5. **Barrier action execution**: When the last thread calls `await()`, the barrier automatically triggers a [`SumAggregator`](src/SumAggregator.java) object that implements the [`Runnable`](https://docs.oracle.com/en/java/javase/26/docs/api/java.base/java/lang/Runnable.html)) interface before releasing the threads.
+6. **Result aggregation**: [`SumAggregator`](src/SumAggregator.java) sums all partial values stored in the list and outputs the computed approximation of $\pi$.
+
+## 📂 Repository Structure
 
 ```
-+─pi-leibniz                    ---> Project directory
-  ├─── doc                      ---> Directory with HTML pages resulted from generated Javadoc
-  └─── src                      ---> Directory with source code files
-       └─── CalcThread.java     ---> Thread to compute a term of the series
-       └─── PiLeibniz.java      ---> Main program class
-       └─── SumAggregator.java  ---> Aggregator to sum the computed values for the terms
+pi-leibniz/
+├── doc/                        # Generated Javadoc HTML documentation
+├── README.md
+└── src/
+    ├── CalcThread.java         # Worker thread to compute an individual term
+    ├── PiLeibniz.java          # Main application entry point
+    └── SumAggregator.java      # Aggregator runnable executed when the barrier trips
 ```
 
-After cloning this repository with `git clone` to your local file system, you can import it to your preferred IDE.
-[Java Development Kit (JDK)](https://www.oracle.com/java/technologies/downloads/) is required to develop with and run
-this program. HTML documentation is generated by running the `javadoc` command.
+## 🚀 Getting Started
 
-## Caveat ##
-The computation of the approximation to π with more than 2,000 terms (threads) is likely to make the program fail due to the following error: **_java.lang.OutOfMemoryError: Unable to create new native thread_**. This exception is caused by excessive thread creation in a Java application. It happens when the Java Virtual Machine (JVM) asks the underlying operating system for a new thread, but the operating system refuses to allocate the thread. See more information [here](https://www.baeldung.com/java-outofmemoryerror-unable-to-create-new-native-thread).
+### Prerequisites
+
+* Java Development Kit (JDK) 8 or newer
+* A terminal or IDE 
+
+This program uses Java's standard library, so it requires no additional dependencies.
+
+### Running
+
+Pass the number of terms (precision) as a command-line argument:
+
+```bash
+java -cp out PiLeibniz 4000
+```
+
+Output example:
+
+```text
+Calculating the value of pi with 4000 terms...
+3.1413426535937043
+276 milliseconds
+```
+
+## ⚠️ Caveat
+
+The computation of the approximation to $\pi$ with a large number of terms (threads) is likely to make the program fail due to the following error: `java.lang.OutOfMemoryError: Unable to create new native thread.` This exception is caused by excessive thread creation in a Java application. It happens when the Java Virtual Machine (JVM) asks the underlying operating system for a new thread, but the operating system refuses to allocate the thread. See more information [here](https://www.baeldung.com/java-outofmemoryerror-unable-to-create-new-native-thread).
