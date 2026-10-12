@@ -14,8 +14,10 @@ A **barrier** is a synchronization mechanism that causes multiple threads to wai
 
 1. **Decomposition and thread spawning**: The user inputs the number of terms (`precision`) to calculate via the command line. An independent worker thread ([`CalcThread`](src/CalcThread.java)) is spawned for each term $i \in [0, \text{precision}-1]$.
 2. **Partial term calculation**: Each thread computes its $i$-th term:
-   $$\text{term}_i = 4 \cdot \frac{(-1)^i}{2i + 1}$$
-3. **Thread-safe storage**: The computed partial term is stored into a shared, thread-safe list.
+
+   $$term_i = 4 \cdot \frac{(-1)^i}{2i + 1}$$
+
+3. **Thread-safe storage**: The computed partial term is stored into a shared, thread-safe list, using an instance of [`Collections.synchronizedList`](https://docs.oracle.com/en/java/javase/26/docs/api/java.base/java/util/Collections.html#synchronizedList(java.util.List)).
 4. **Waiting at the barrier**: After appending its value, each [`CalcThread`](src/CalcThread.java) calls `barrier.await()`, suspending execution until all other worker threads finish their computations.
 5. **Barrier action execution**: When the last thread calls `await()`, the barrier automatically triggers a [`SumAggregator`](src/SumAggregator.java) object that implements the [`Runnable`](https://docs.oracle.com/en/java/javase/26/docs/api/java.base/java/lang/Runnable.html)) interface before releasing the threads.
 6. **Result aggregation**: [`SumAggregator`](src/SumAggregator.java) sums all partial values stored in the list and outputs the computed approximation of $\pi$.
