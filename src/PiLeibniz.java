@@ -17,7 +17,6 @@ public class PiLeibniz {
 	 * @param args Command line arguments
 	 */
 	public static void main(String[] args) {
-		System.out.println("Concurrent calculation of an approximation for pi\n");
 		if (args.length != 1) {
 			System.err.println("Invalid number of terms.");
 			System.err.println("The program will be finished.");
@@ -40,8 +39,10 @@ public class PiLeibniz {
 			}
 			long finish = System.nanoTime();
 			long timeElapsed = finish - start;
+
+			Thread.sleep(500);
 			System.out.println((timeElapsed / 1000000) + " milliseconds");
-		} catch (java.lang.OutOfMemoryError ome) {
+		} catch (OutOfMemoryError | InterruptedException ome) {
 			System.err.println("Insufficient memory to create threads.");
 			System.exit(1);
 		}
