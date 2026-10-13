@@ -59,6 +59,6 @@ Calculating the value of pi with 4000 terms...
 276 milliseconds
 ```
 
-## ⚠️ Caveat
+### ⚠️ Caveat
 
-The computation of the approximation to $\pi$ with a large number of terms (threads) is likely to make the program fail due to the following error: `java.lang.OutOfMemoryError: Unable to create new native thread.` This exception is caused by excessive thread creation in a Java application. It happens when the Java Virtual Machine (JVM) asks the underlying operating system for a new thread, but the operating system refuses to allocate the thread. See more information [here](https://www.baeldung.com/java-outofmemoryerror-unable-to-create-new-native-thread).
+The computation of the approximation to $\pi$ with a large number of terms (threads) is likely to make the program fail due to the following error: `java.lang.OutOfMemoryError: Unable to create new native thread.` This exception occurs when a Java application creates too many threads. It happens when the Java Virtual Machine (JVM) asks the underlying operating system for a new thread, but the operating system refuses to allocate the thread. See more information [here](https://www.baeldung.com/java-outofmemoryerror-unable-to-create-new-native-thread).
